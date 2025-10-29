@@ -89,7 +89,7 @@ export const resumes: Resume[] = [
       },
     },
   },
- {
+{
     id: "4",
     companyName: "Google",
     jobTitle: "Frontend Developer",
