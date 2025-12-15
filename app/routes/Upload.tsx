@@ -11,6 +11,7 @@ const USE_MOCK_AI = true; // set false when Puter AI works
 
 const MOCK_FEEDBACK = {
   overallScore: Math.floor(Math.random() * 20) + 70, // 80-99
+  ATSScore: Math.floor(Math.random() * 20) + 70, // 80-99
   toneAndStyle: { score: Math.floor(Math.random() * 10) + 40},
   content: { score: Math.floor(Math.random() * 10) + 60 },
   structure: { score: Math.floor(Math.random() * 10) + 50 },
