@@ -7,18 +7,20 @@ import { usePuterStore } from '~/lib/puter';
 import { generateUUID } from '~/lib/utils';
 import { prepareInstructions } from './constant';
 
+
 const upload = () => {
     const {auth, isLoading, fs, ai, kv } = usePuterStore();
     const navigate = useNavigate();
     const[isProcessing, setIsProcessing] = useState(false);
     const[statusText, setStatusText] = useState('');
     const[file, setFile] = useState<File | null>(null);
+    
 
     const handleFileSelect = (file: File | null) => {
        setFile(file);
     }
 
-    const handleAnalyze = async ({ file, companyName, jobTitle, jobDescription }: { file: File; companyName: string; jobTitle: string; jobDescription: string; }): Promise<void> => {
+    const handleAnalyze = async ({companyName, jobTitle, jobDescription, file }: { companyName: string; jobTitle: string; jobDescription: string; file: File;}) => {
         setIsProcessing(true);
         setStatusText('Uploading the file...');
 
@@ -47,21 +49,30 @@ const upload = () => {
 
         setStatusText('Analyzing ...');
 
+
         const feedback = await ai.feedback(
             uploadImage.path,
             prepareInstructions({ jobTitle, jobDescription })
         )
         if(!feedback) return setStatusText('Error: Failed to analyze resume');
 
-        const feedbackText = typeof feedback === 'string'
+        const feedbackText = typeof feedback.message.content === 'string'
             ? feedback.message.content 
             : feedback.message.content[0].text;  
 
-        data.feedback = JSON.parse(feedbackText);
+        let feedbackData: any;
+           try {
+               feedbackData = JSON.parse(feedbackText);
+           } catch {
+           // fallback: store the raw text if it’s not JSON
+               feedbackData = { text: feedbackText };
+     }
+
+             data.feedback = feedbackData;
+
         await kv.set(`resume:${uuid}`, JSON.stringify(data));
 
         setStatusText('Analysis complete! Redirecting...');
-        navigate(`/resume${uuid}`);
         console.log(data);
 
 

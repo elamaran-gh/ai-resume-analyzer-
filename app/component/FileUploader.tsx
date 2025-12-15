@@ -1,12 +1,12 @@
 import React, {useCallback, useState} from 'react'
 import {useDropzone} from 'react-dropzone'
-import {formatFileSize} from '../lib/utils'
+import {formatSize} from '../lib/utils'
 
 interface FileUploaderProps {
     onFileSelect?: (file: File | null ) => void;
 }
 
-const FileUploader = ({onFileSelect}: FileUploaderProps) => {
+const FileUploader: React.FC<FileUploaderProps> = ({onFileSelect}: FileUploaderProps) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -26,12 +26,13 @@ const FileUploader = ({onFileSelect}: FileUploaderProps) => {
   return (
     <div className="w-full gradient-border">
         <div {...getRootProps()}>
-      <input {...getInputProps()} />
+             <input {...getInputProps()} />
+             
       <div className="space-y-4 cursor-pointer">
         
 
         {file ? (
-            <div className="uploader-selected-file" onClick={e => e.stopPropagation() }>
+            <div className="uploader-selected-file" onClick={e => e.stopPropagation()}>
                 <img src="/images/pdf.png" alt="pdf" className="size-10"/>
 
                  <div className="flex items-center space-x-3">
@@ -42,9 +43,9 @@ const FileUploader = ({onFileSelect}: FileUploaderProps) => {
                                {file.name}
                         </p> 
 
-                        <p className="text-sm text-gray-500">
-                             {formatFileSize(file.size)}
-                        </p>
+                            <p className="text-sm text-gray-500">
+                                {formatSize(file.size)}
+                            </p>
 
                       </div>
                 </div>
@@ -57,11 +58,11 @@ const FileUploader = ({onFileSelect}: FileUploaderProps) => {
     
         ): (
             <div>
-                <div className="mx-auto w-16 h-16 flex item-center justify-center mb-2">
+                <div className="mx-auto w-16 h-16 flex items-center justify-center mb-2">
                    <img src="/icons/info.svg" alt="upload" className="size-20"/>
                 </div>
                 <p className="text-lg text-gray-500">
-                    <span className="fond-semibold">
+                    <span className="font-semibold">
                         Click to upload
                     </span>
                 </p>
