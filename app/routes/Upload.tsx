@@ -8,16 +8,16 @@ import { generateUUID } from '~/lib/utils';
 import { prepareInstructions } from './constant';
 import Details from '~/component/Details';
 
-const USE_MOCK_AI = true; // set false when Puter AI works
+// const USE_MOCK_AI = true; // set false when Puter AI works
 
-const MOCK_FEEDBACK = {
-  overallScore: Math.floor(Math.random() * 20) + 70, // 80-99
-  ATSScore: Math.floor(Math.random() * 20) + 70, // 80-99
-  toneAndStyle: { score: Math.floor(Math.random() * 10) + 40},
-  content: { score: Math.floor(Math.random() * 10) + 60 },
-  structure: { score: Math.floor(Math.random() * 10) + 50 },
-  skills: { score: Math.floor(Math.random() * 10) + 70 }
-};
+// const MOCK_FEEDBACK = {
+//   overallScore: Math.floor(Math.random() * 20) + 70, // 80-99
+//   ATSScore: Math.floor(Math.random() * 20) + 70, // 80-99
+//   toneAndStyle: { score: Math.floor(Math.random() * 10) + 40},
+//   content: { score: Math.floor(Math.random() * 10) + 60 },
+//   structure: { score: Math.floor(Math.random() * 10) + 50 },
+//   skills: { score: Math.floor(Math.random() * 10) + 70 }
+// };
 
 
 
@@ -27,8 +27,8 @@ const upload = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [statusText, setStatusText] = useState('');
     const [file, setFile] = useState<File | null>(null);
-   
-     
+
+
 
     const handleFileSelect = (file: File | null) => {
         setFile(file);
@@ -50,7 +50,6 @@ const upload = () => {
         if (!uploadImage) return setStatusText('Error: Failed to upload image');
 
         setStatusText('Preparing data...');
-
         const uuid = generateUUID();
         const data = {
             id: uuid,
@@ -64,41 +63,57 @@ const upload = () => {
         setStatusText('Analyzing ...');
 
 
-        //  MOCK AI (EXACT REPLACEMENT)
-        let feedbackData: any;
+        // //  MOCK AI (EXACT REPLACEMENT)
+        // let feedbackData: any;
 
-        if (USE_MOCK_AI) {
-            feedbackData = MOCK_FEEDBACK;
-        } else {
-            const feedback = await ai.feedback(
-                uploadImage.path,
-                prepareInstructions({ jobTitle, jobDescription })
-            );
+        // if (USE_MOCK_AI) {
+        //     feedbackData = MOCK_FEEDBACK;
+        // } else {
+        //     const feedback = await ai.feedback(
+        //         uploadImage.path,
+        //         prepareInstructions({ jobTitle, jobDescription })
+        //     );
 
-            if (!feedback) {
-                setStatusText('Error: Failed to analyze resume');
-                return;
-            }
+        const feedback = await ai.feedback(
+            uploadImage.path,
+            prepareInstructions({ jobTitle, jobDescription })
+        );
 
-            const feedbackText =
-                typeof feedback.message.content === 'string'
-                    ? feedback.message.content
-                    : feedback.message.content[0].text;
-
-            try {
-                feedbackData = JSON.parse(feedbackText);
-            } catch {
-                feedbackData = { text: feedbackText };
-            }
+        if (!feedback) {
+            setStatusText('Error: Failed to analyze resume');
+            return;
         }
 
-        data.feedback = feedbackData;
-        await kv.set(`resume:${uuid}`, JSON.stringify(data));
+        const feedbackText =
+            typeof feedback.message.content === 'string'
+                ? feedback.message.content
+                : feedback.message.content[0].text;
 
+        // try {
+        //     feedback = JSON.parse(feedbackText);
+        // } catch {
+        //     feedback = { text: feedbackText };
+        // }
+
+        data.feedback = JSON.parse(feedbackText);
+        let parsedFeedback;
+
+        try {
+            parsedFeedback = JSON.parse(feedbackText);
+        } catch (error) {
+            parsedFeedback = {
+                rawText: feedbackText
+            };
+        }
+
+        data.feedback = parsedFeedback;
+
+        await kv.set(`resume:${uuid}`, JSON.stringify(data));
         setStatusText('Analysis complete! Redirecting...');
         console.log(data);
         navigate(`/resume/${uuid}`);
-        return <Details feedback={feedbackData} />;
+
+        // return <Details feedback={feedbackData} />;
 
 
     }
