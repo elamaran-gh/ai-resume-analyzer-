@@ -2,7 +2,7 @@ import React, { useEffect, useState, } from 'react'
 import { data, Link, useNavigate, useParams } from 'react-router'; 
 import ATS from '~/component/ATS';
 import Details from '~/component/Details';
-import Summary from '~/component/summary';
+import Summary from '~/component/Summary';
 import { usePuterStore } from '~/lib/puter';    
 
 export const meta = () => {[
@@ -80,8 +80,8 @@ const resume = () => {
             {feedback ? (
                 <div className="flex flex-col gap-8 animate-in fade-in duration-1000 ">
                      <Summary feedback={feedback}/>
-                     <ATS score ={feedback?.ATS?.score ?? 0} suggestions={feedback?.ATS?.tips ?? []}/>
-                     <Details feedBack={feedback}/>
+                     <ATS score ={feedback?.ATS?.score ?? 0} suggestion={feedback?.ATS?.tips ?? []}/>
+                     <Details feedback={feedback}/>
                 </div>
             ): (
                 <img src="/images/resume-scan-2.gif" className="w-full"/>

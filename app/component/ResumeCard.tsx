@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import ScoreCircle from "./ScoreCircle";
 import { useEffect, useState } from "react";
 import { usePuterStore } from "~/lib/puter";
-import { resume } from "react-dom/server";
 
 const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath } }: { resume: Resume }) => {
   const { fs } = usePuterStore();

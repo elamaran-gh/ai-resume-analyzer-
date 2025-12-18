@@ -64,6 +64,14 @@ const CategoryContent = ({
 }: {
   tips: { type: "good" | "improve"; tip: string; explanation: string }[];
 }) => {
+    if (!Array.isArray(tips) || tips.length === 0) {
+    return (
+      <div className="text-gray-400 text-center py-4">
+        No feedback available
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 items-center w-full">
       <div className="bg-gray-50 w-full rounded-lg px-5 py-4 grid grid-cols-2 gap-4">
@@ -130,7 +138,9 @@ const Details = ({ feedback }: { feedback?: Feedback }) => {
             />
           </AccordionHeader>
           <AccordionContent itemId="tone-style">
-            <CategoryContent tips={feedback.toneAndStyle.tips} />
+            {/* <CategoryContent tips={feedback.toneAndStyle.tips} /> */}
+            <CategoryContent tips={feedback.toneAndStyle?.tips ?? []} />
+
           </AccordionContent>
         </AccordionItem>
         <AccordionItem id="content">
@@ -141,7 +151,8 @@ const Details = ({ feedback }: { feedback?: Feedback }) => {
             />
           </AccordionHeader>
           <AccordionContent itemId="content">
-            <CategoryContent tips={feedback.content.tips} />
+            {/* <CategoryContent tips={feedback.content.tips} /> */}
+            <CategoryContent tips={feedback.content?.tips ?? []} />
           </AccordionContent>
         </AccordionItem>
         <AccordionItem id="structure">
@@ -152,7 +163,8 @@ const Details = ({ feedback }: { feedback?: Feedback }) => {
             />
           </AccordionHeader>
           <AccordionContent itemId="structure">
-            <CategoryContent tips={feedback.structure.tips} />
+            {/* <CategoryContent tips={feedback.structure.tips} /> */}
+            <CategoryContent tips={feedback.structure?.tips ?? []} />
           </AccordionContent>
         </AccordionItem>
         <AccordionItem id="skills">
@@ -163,7 +175,8 @@ const Details = ({ feedback }: { feedback?: Feedback }) => {
             />
           </AccordionHeader>
           <AccordionContent itemId="skills">
-            <CategoryContent tips={feedback.skills.tips} />
+            {/* <CategoryContent tips={feedback.skills.tips} /> */}
+            <CategoryContent tips={feedback.skills?.tips ?? []} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
