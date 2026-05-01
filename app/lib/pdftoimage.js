@@ -1,10 +1,4 @@
-export interface PdfConversionResult {
-  imageUrl: string;
-  file: File | null;
-  error?: string;
-}
-
-let pdfjsPromise: Promise<any> | null = null;
+let pdfjsPromise = null;
 
 async function getPdfJs() {
   if (typeof window === "undefined") return null;
@@ -12,9 +6,9 @@ async function getPdfJs() {
   if (!pdfjsPromise) {
     pdfjsPromise = (async () => {
       const pdfjs = await import("pdfjs-dist/build/pdf.mjs");
-      const workerSrc = (await import(
-        "pdfjs-dist/build/pdf.worker.min.mjs?url"
-      )).default;
+      const workerSrc = (
+        await import("pdfjs-dist/build/pdf.worker.min.mjs?url")
+      ).default;
 
       pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
       return pdfjs;
@@ -24,9 +18,7 @@ async function getPdfJs() {
   return pdfjsPromise;
 }
 
-export async function convertPdfToImage(
-  file: File
-): Promise<PdfConversionResult> {
+export async function convertPdfToImage(file) {
   try {
     const pdfjs = await getPdfJs();
     if (!pdfjs) throw new Error("Browser only");
@@ -39,7 +31,9 @@ export async function convertPdfToImage(
     const viewport = page.getViewport({ scale: 3 });
 
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) throw new Error("Canvas context not available"); // ✅ fix
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
@@ -48,7 +42,9 @@ export async function convertPdfToImage(
 
     return new Promise((resolve) => {
       canvas.toBlob((blob) => {
-        if (!blob) return resolve({ imageUrl: "", file: null });
+        if (!blob) {
+          return resolve({ imageUrl: "", file: null });
+        }
 
         resolve({
           imageUrl: URL.createObjectURL(blob),
@@ -61,6 +57,10 @@ export async function convertPdfToImage(
       }, "image/png");
     });
   } catch (err) {
-    return { imageUrl: "", file: null, error: String(err) };
+    return {
+      imageUrl: "",
+      file: null,
+      error: String(err),
+    };
   }
 }

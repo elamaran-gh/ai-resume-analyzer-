@@ -7,11 +7,8 @@ import {
 } from "./Accordion";
 import { useState } from "react";
 
-
-
-
-
-const ScoreBadge = ({ score }: { score: number }) => {
+// Score Badge
+const ScoreBadge = ({ score }) => {
   return (
     <div
       className={cn(
@@ -44,13 +41,8 @@ const ScoreBadge = ({ score }: { score: number }) => {
   );
 };
 
-const CategoryHeader = ({
-  title,
-  categoryScore,
-}: {
-  title: string;
-  categoryScore: number;
-}) => {
+// Category Header
+const CategoryHeader = ({ title, categoryScore }) => {
   return (
     <div className="flex flex-row gap-4 items-center py-2">
       <p className="text-2xl font-semibold">{title}</p>
@@ -59,12 +51,9 @@ const CategoryHeader = ({
   );
 };
 
-const CategoryContent = ({
-  tips,
-}: {
-  tips: { type: "good" | "improve"; tip: string; explanation: string }[];
-}) => {
-    if (!Array.isArray(tips) || tips.length === 0) {
+// Category Content
+const CategoryContent = ({ tips }) => {
+  if (!Array.isArray(tips) || tips.length === 0) {
     return (
       <div className="text-gray-400 text-center py-4">
         No feedback available
@@ -79,15 +68,18 @@ const CategoryContent = ({
           <div className="flex flex-row gap-2 items-center" key={index}>
             <img
               src={
-                tip.type === "good" ? "/icons/check.svg" : "/icons/warning.svg"
+                tip.type === "good"
+                  ? "/icons/check.svg"
+                  : "/icons/warning.svg"
               }
               alt="score"
               className="size-5"
             />
-            <p className="text-xl text-gray-500 ">{tip.tip}</p>
+            <p className="text-xl text-gray-500">{tip.tip}</p>
           </div>
         ))}
       </div>
+
       <div className="flex flex-col gap-4 w-full">
         {tips.map((tip, index) => (
           <div
@@ -119,14 +111,16 @@ const CategoryContent = ({
   );
 };
 
-const Details = ({ feedback }: { feedback?: Feedback }) => {
-    if (!feedback) {
-  return (
-    <div className="flex items-center justify-center py-10 text-gray-500">
-      Analyzing resume...
-    </div>
-  );
-}
+// Main Component
+const Details = ({ feedback }) => {
+  if (!feedback) {
+    return (
+      <div className="flex items-center justify-center py-10 text-gray-500">
+        Analyzing resume...
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <Accordion>
@@ -138,11 +132,10 @@ const Details = ({ feedback }: { feedback?: Feedback }) => {
             />
           </AccordionHeader>
           <AccordionContent itemId="tone-style">
-            {/* <CategoryContent tips={feedback.toneAndStyle.tips} /> */}
             <CategoryContent tips={feedback.toneAndStyle?.tips ?? []} />
-
           </AccordionContent>
         </AccordionItem>
+
         <AccordionItem id="content">
           <AccordionHeader itemId="content">
             <CategoryHeader
@@ -151,10 +144,10 @@ const Details = ({ feedback }: { feedback?: Feedback }) => {
             />
           </AccordionHeader>
           <AccordionContent itemId="content">
-            {/* <CategoryContent tips={feedback.content.tips} /> */}
             <CategoryContent tips={feedback.content?.tips ?? []} />
           </AccordionContent>
         </AccordionItem>
+
         <AccordionItem id="structure">
           <AccordionHeader itemId="structure">
             <CategoryHeader
@@ -163,10 +156,10 @@ const Details = ({ feedback }: { feedback?: Feedback }) => {
             />
           </AccordionHeader>
           <AccordionContent itemId="structure">
-            {/* <CategoryContent tips={feedback.structure.tips} /> */}
             <CategoryContent tips={feedback.structure?.tips ?? []} />
           </AccordionContent>
         </AccordionItem>
+
         <AccordionItem id="skills">
           <AccordionHeader itemId="skills">
             <CategoryHeader
@@ -175,7 +168,6 @@ const Details = ({ feedback }: { feedback?: Feedback }) => {
             />
           </AccordionHeader>
           <AccordionContent itemId="skills">
-            {/* <CategoryContent tips={feedback.skills.tips} /> */}
             <CategoryContent tips={feedback.skills?.tips ?? []} />
           </AccordionContent>
         </AccordionItem>
